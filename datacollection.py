@@ -46,8 +46,10 @@ except Exception as e:
 def get_real_time_traffic_data():
     origin = (41.8781, -87.6298)  # Chicago coordinates (latitude, longitude)
     destination = (40.7128, -74.0060)  # New York coordinates (latitude, longitude)
-    graph = ox.graph_from_point(origin, distance=1000, network_type='drive')
-    route = ox.shortest_path(graph, origin, destination, weight='length')
+    graph = ox.graph_from_point(origin, dist=1000, network_type='drive')
+    origin_node = ox.distance.nearest_nodes(graph, origin[1], origin[0])
+    destination_node = ox.distance.nearest_nodes(graph, destination[1], destination[0])
+    route = ox.routing.shortest_path(graph, origin_node, destination_node, weight='length')
     return route
 
 real_time_data = get_real_time_traffic_data()
