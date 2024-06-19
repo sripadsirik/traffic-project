@@ -3,6 +3,7 @@ import numpy as np
 import requests
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine, text
+import osmnx as ox
 
 # PostgreSQL database setup
 db_url = 'postgresql://postgres:Indianman1$$$@localhost:5432/traffic_data'
@@ -41,21 +42,15 @@ except Exception as e:
     print("Failed to write to the database.")
     print(e)
 
-# Simulate real-time traffic data
-def get_real_time_traffic_data(api_key):
-    base_url = 'https://maps.googleapis.com/maps/api/directions/json'
-    params = {
-        'origin': 'Chicago, IL',  # Example origin
-        'destination': 'New York, NY',  # Example destination
-        'key': api_key,
-        'departure_time': 'now',
-        'traffic_model': 'best_guess',  # or 'pessimistic', 'optimistic'
-    }
-    response = requests.get(base_url, params=params)
-    data = response.json()
-    return data
+# Simulate real-time traffic data using OSM
+def get_real_time_traffic_data():
+    origin = (41.8781, -87.6298)  # Chicago coordinates (latitude, longitude)
+    destination = (40.7128, -74.0060)  # New York coordinates (latitude, longitude)
+    graph = ox.graph_from_point(origin, distance=1000, network_type='drive')
+    route = ox.shortest_path(graph, origin, destination, weight='length')
+    return route
 
-real_time_data = get_real_time_traffic_data('AIzaSyD035l7OlCdc42zYBnb9eoT86rhx_r_6gM')
+real_time_data = get_real_time_traffic_data()
 print(real_time_data)
 
 # Simulate weather data
