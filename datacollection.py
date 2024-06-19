@@ -50,19 +50,39 @@ def get_real_time_traffic_data():
     origin_node = ox.distance.nearest_nodes(graph, origin[1], origin[0])
     destination_node = ox.distance.nearest_nodes(graph, destination[1], destination[0])
     route = ox.routing.shortest_path(graph, origin_node, destination_node, weight='length')
-    return route
+    return graph, route
 
-real_time_data = get_real_time_traffic_data()
-print(real_time_data)
+graph, real_time_data = get_real_time_traffic_data()
+print(f"Shortest path: {real_time_data}")
 
 # Simulate weather data
-def get_weather_data():
-    response = requests.get("https://api.openweathermap.org/data/2.5/weather?q=city&appid=your_api_key")
+def get_weather_data(api_key, city_name, latitude, longitude):
+    base_url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={latitude},{longitude}"
+    response = requests.get(base_url)
     data = response.json()
-    weather_condition = data['weather'][0]['main']
-    return weather_condition
 
-# Real-time data simulation
-# Uncomment the following lines if you have access to real APIs
-# real_time_traffic_data = get_real_time_traffic_data()
-# current_weather = get_weather_data()
+    try:
+        weather_condition = data['current']['condition']['text']
+        return weather_condition
+    except KeyError:
+        print(f"Error: Weather data not found for {city_name}.")
+        print("Full API response:", data)
+        return None
+
+# Replace 'your_api_key' with your actual WeatherAPI.com API key
+api_key = 'a80d16ef322a4f1a804234739241906'
+
+# Chicago coordinates (latitude, longitude)
+chicago_lat, chicago_lon = 41.8781, -87.6298
+chicago_weather = get_weather_data(api_key, 'Chicago', chicago_lat, chicago_lon)
+
+if chicago_weather:
+    print(f"Current weather condition in Chicago: {chicago_weather}")
+
+# New York coordinates (latitude, longitude)
+ny_lat, ny_lon = 40.7128, -74.0060
+ny_weather = get_weather_data(api_key, 'New York', ny_lat, ny_lon)
+
+if ny_weather:
+    print(f"Current weather condition in New York: {ny_weather}")
+
