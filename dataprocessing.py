@@ -1,6 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
+from datetime import datetime
 
 # PostgreSQL database setup
 db_url = 'postgresql://postgres:Indianman1$$$@localhost:5432/traffic_data'
@@ -14,29 +15,29 @@ try:
     # Read data from the database into a pandas DataFrame
     df_traffic = pd.read_sql(query, con=engine)
 
-    # Display the number of rows in the DataFrame
-    print("Number of rows loaded into DataFrame:", df_traffic.shape[0])
-
-    # Display the first few rows of the DataFrame to inspect the data
-    print(df_traffic.head(10))
-
-    # Check for missing values
-    print("\nMissing Values:")
-    print(df_traffic.isnull().sum())
-
     # Handle missing values (if any)
     df_traffic = df_traffic.dropna()
-
-    # Display the DataFrame after handling missing values
-    print("\nDataFrame after handling missing values:")
-    print(df_traffic.head(10))
 
     # Normalize the 'traffic_flow' column
     scaler = MinMaxScaler()
     df_traffic['traffic_flow_normalized'] = scaler.fit_transform(df_traffic[['traffic_flow']])
 
-    # Display the DataFrame after normalization
-    print("\nDataFrame after normalization:")
+    # Extract timestamp features
+    df_traffic['timestamp'] = pd.to_datetime(df_traffic['timestamp'])
+    df_traffic['hour'] = df_traffic['timestamp'].apply(lambda x: x.hour)
+    df_traffic['day_of_week'] = df_traffic['timestamp'].apply(lambda x: x.dayofweek)
+    df_traffic['month'] = df_traffic['timestamp'].apply(lambda x: x.month)
+
+    # One-hot encode the 'weather_condition' column
+    encoder = OneHotEncoder(sparse_output=False)
+    weather_encoded = encoder.fit_transform(df_traffic[['weather_condition']])
+    weather_encoded_df = pd.DataFrame(weather_encoded, columns=encoder.get_feature_names_out(['weather_condition']))
+
+    # Concatenate the original DataFrame with the encoded weather DataFrame
+    df_traffic = pd.concat([df_traffic, weather_encoded_df], axis=1)
+
+    # Display the DataFrame after feature engineering
+    print("\nDataFrame after feature engineering:")
     print(df_traffic.head(10))
 
 except Exception as e:
