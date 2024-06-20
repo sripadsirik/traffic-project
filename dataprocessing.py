@@ -26,11 +26,11 @@ try:
     print(missing_values)
 
     # Drop rows with missing values (if needed)
-    # df_traffic.dropna(inplace=True)
+    df_traffic.dropna(inplace=True)
 
     # Impute missing values (if needed)
     # Example: impute missing numerical values with mean
-    # df_traffic.fillna(df_traffic.mean(), inplace=True)
+    df_traffic.fillna(df_traffic.mean(), inplace=True)
 
     # Display the updated DataFrame after handling missing values
     print("\nDataFrame after handling missing values:")
