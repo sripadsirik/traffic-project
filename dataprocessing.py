@@ -36,7 +36,5 @@ try:
     print("\nDataFrame after handling missing values:")
     print(df_traffic.head(10))
 
-    # Perform other data cleaning and preprocessing steps as needed
-
 except Exception as e:
     print("Error:", e)
