@@ -1,5 +1,6 @@
 import pandas as pd
 from sqlalchemy import create_engine
+from sklearn.preprocessing import MinMaxScaler
 
 # PostgreSQL database setup
 db_url = 'postgresql://postgres:Indianman1$$$@localhost:5432/traffic_data'
@@ -19,21 +20,23 @@ try:
     # Display the first few rows of the DataFrame to inspect the data
     print(df_traffic.head(10))
 
-    # Handling Missing Values
     # Check for missing values
-    missing_values = df_traffic.isnull().sum()
     print("\nMissing Values:")
-    print(missing_values)
+    print(df_traffic.isnull().sum())
 
-    # Drop rows with missing values (if needed)
-    df_traffic.dropna(inplace=True)
+    # Handle missing values (if any)
+    df_traffic = df_traffic.dropna()
 
-    # Impute missing values (if needed)
-    # Example: impute missing numerical values with mean
-    df_traffic.fillna(df_traffic.mean(), inplace=True)
-
-    # Display the updated DataFrame after handling missing values
+    # Display the DataFrame after handling missing values
     print("\nDataFrame after handling missing values:")
+    print(df_traffic.head(10))
+
+    # Normalize the 'traffic_flow' column
+    scaler = MinMaxScaler()
+    df_traffic['traffic_flow_normalized'] = scaler.fit_transform(df_traffic[['traffic_flow']])
+
+    # Display the DataFrame after normalization
+    print("\nDataFrame after normalization:")
     print(df_traffic.head(10))
 
 except Exception as e:
