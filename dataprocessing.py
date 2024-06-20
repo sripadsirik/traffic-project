@@ -65,3 +65,6 @@ df_traffic['traffic_flow_Fog'] = df_traffic['traffic_flow'] * df_traffic['weathe
 
 # Display the DataFrame after feature engineering
 print("\nDataFrame after feature engineering:\n", df_traffic.head(10))
+
+
+# Model Training for predictions
