@@ -67,4 +67,6 @@ df_traffic['traffic_flow_Fog'] = df_traffic['traffic_flow'] * df_traffic['weathe
 print("\nDataFrame after feature engineering:\n", df_traffic.head(10))
 
 
-# Model Training for predictions
+# Save the processed DataFrame to a CSV file for model training
+df_traffic.to_csv('processed_traffic_data.csv', index=False)
+print("Data processing and feature engineering complete. Processed data saved to 'processed_traffic_data.csv'.")
