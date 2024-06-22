@@ -28,3 +28,8 @@ r2 = r2_score(y_test, y_pred)
 
 print(f"Mean Squared Error: {mse}")
 print(f"R^2 Score: {r2}")
+
+# Example of making a prediction on new data
+new_data = X_test.iloc[0].values.reshape(1, -1)
+predicted_traffic_flow = model.predict(new_data)
+print(f"Predicted Traffic Flow: {predicted_traffic_flow[0]}")
