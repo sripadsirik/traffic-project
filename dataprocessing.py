@@ -32,9 +32,9 @@ print("\nMissing Values:\n", missing_values)
 # Handle missing values if necessary (for example, filling or dropping)
 df_traffic = df_traffic.dropna()
 
-# Normalize the traffic_flow column
+# Normalize the adjusted traffic flow column
 scaler = MinMaxScaler()
-df_traffic['traffic_flow_normalized'] = scaler.fit_transform(df_traffic[['traffic_flow']])
+df_traffic['adjusted_traffic_flow_normalized'] = scaler.fit_transform(df_traffic[['adjusted_traffic_flow']])
 
 # Feature Engineering: Extract time-based features
 df_traffic['timestamp'] = pd.to_datetime(df_traffic['timestamp'])
@@ -46,26 +46,25 @@ df_traffic['month'] = df_traffic['timestamp'].dt.month
 df_traffic = pd.get_dummies(df_traffic, columns=['weather_condition'])
 
 # Add lag features (e.g., traffic flow 15, 30, 45 minutes ago)
-df_traffic['traffic_flow_lag_1'] = df_traffic['traffic_flow'].shift(1)
-df_traffic['traffic_flow_lag_2'] = df_traffic['traffic_flow'].shift(2)
-df_traffic['traffic_flow_lag_3'] = df_traffic['traffic_flow'].shift(3)
+df_traffic['traffic_flow_lag_1'] = df_traffic['adjusted_traffic_flow'].shift(1)
+df_traffic['traffic_flow_lag_2'] = df_traffic['adjusted_traffic_flow'].shift(2)
+df_traffic['traffic_flow_lag_3'] = df_traffic['adjusted_traffic_flow'].shift(3)
 
 # Add rolling window features (e.g., average traffic flow over the past hour)
-df_traffic['traffic_flow_roll_mean_4'] = df_traffic['traffic_flow'].rolling(window=4).mean()
-df_traffic['traffic_flow_roll_std_4'] = df_traffic['traffic_flow'].rolling(window=4).std()
+df_traffic['traffic_flow_roll_mean_4'] = df_traffic['adjusted_traffic_flow'].rolling(window=4).mean()
+df_traffic['traffic_flow_roll_std_4'] = df_traffic['adjusted_traffic_flow'].rolling(window=4).std()
 
 # Drop rows with NaN values introduced by lag and rolling window features
 df_traffic = df_traffic.dropna()
 
 # Add interaction features (e.g., interaction between traffic flow and weather conditions)
-df_traffic['traffic_flow_Clear'] = df_traffic['traffic_flow'] * df_traffic['weather_condition_Clear']
-df_traffic['traffic_flow_Rain'] = df_traffic['traffic_flow'] * df_traffic['weather_condition_Rain']
-df_traffic['traffic_flow_Snow'] = df_traffic['traffic_flow'] * df_traffic['weather_condition_Snow']
-df_traffic['traffic_flow_Fog'] = df_traffic['traffic_flow'] * df_traffic['weather_condition_Fog']
+df_traffic['traffic_flow_Clear'] = df_traffic['adjusted_traffic_flow'] * df_traffic['weather_condition_Clear']
+df_traffic['traffic_flow_Rain'] = df_traffic['adjusted_traffic_flow'] * df_traffic['weather_condition_Rain']
+df_traffic['traffic_flow_Snow'] = df_traffic['adjusted_traffic_flow'] * df_traffic['weather_condition_Snow']
+df_traffic['traffic_flow_Fog'] = df_traffic['adjusted_traffic_flow'] * df_traffic['weather_condition_Fog']
 
 # Display the DataFrame after feature engineering
 print("\nDataFrame after feature engineering:\n", df_traffic.head(10))
-
 
 # Save the processed DataFrame to a CSV file for model training
 df_traffic.to_csv('processed_traffic_data.csv', index=False)

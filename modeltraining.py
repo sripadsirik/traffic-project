@@ -7,8 +7,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 df_traffic = pd.read_csv('processed_traffic_data.csv')
 
 # Split the data into features (X) and target (y)
-X = df_traffic.drop(columns=['timestamp', 'traffic_flow'])
-y = df_traffic['traffic_flow']
+X = df_traffic.drop(columns=['timestamp', 'traffic_flow', 'adjusted_traffic_flow'])
+y = df_traffic['adjusted_traffic_flow']
 
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -30,4 +30,4 @@ print(f"R^2 Score: {r2}")
 # Example of making a prediction on new data
 new_data = pd.DataFrame([X_test.iloc[0].values], columns=X.columns)
 predicted_traffic_flow = model.predict(new_data)
-print(f"Predicted Traffic Flow: {predicted_traffic_flow[0]}")
+print(f"Predicted Adjusted Traffic Flow: {predicted_traffic_flow[0]}")

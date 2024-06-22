@@ -86,3 +86,21 @@ ny_weather = get_weather_data(api_key, 'New York', ny_lat, ny_lon)
 if ny_weather:
     print(f"Current weather condition in New York: {ny_weather}")
 
+# Simulate traffic flow based on weather conditions
+def adjust_traffic_flow(traffic_flow, weather_condition):
+    if weather_condition == 'Rain':
+        traffic_flow *= 0.9
+    elif weather_condition == 'Snow':
+        traffic_flow *= 0.7
+    elif weather_condition == 'Fog':
+        traffic_flow *= 0.8
+    return int(traffic_flow)
+
+# Adjust traffic flow in historical data based on weather conditions
+historical_traffic_data['adjusted_traffic_flow'] = historical_traffic_data.apply(
+    lambda row: adjust_traffic_flow(row['traffic_flow'], row['weather_condition']), axis=1
+)
+
+# Print the adjusted historical traffic data
+print("Adjusted historical traffic data:")
+print(historical_traffic_data.head())
