@@ -32,6 +32,17 @@ print("\nMissing Values:\n", missing_values)
 # Handle missing values if necessary (for example, filling or dropping)
 df_traffic = df_traffic.dropna()
 
+# Calculate adjusted traffic flow based on weather conditions
+weather_multipliers = {
+    'Clear': 1.0,
+    'Rain': 0.8,
+    'Snow': 0.6,
+    'Fog': 0.7
+}
+df_traffic['adjusted_traffic_flow'] = df_traffic.apply(
+    lambda row: row['traffic_flow'] * weather_multipliers[row['weather_condition']], axis=1
+)
+
 # Normalize the adjusted traffic flow column
 scaler = MinMaxScaler()
 df_traffic['adjusted_traffic_flow_normalized'] = scaler.fit_transform(df_traffic[['adjusted_traffic_flow']])
